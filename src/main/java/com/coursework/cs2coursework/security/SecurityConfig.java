@@ -1,0 +1,30 @@
+package com.coursework.cs2coursework.security;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/admin").hasAuthority("ROLE_ADMIN") // Доступ лише для ADMIN
+                .requestMatchers("/user").authenticated() // Доступ для авторизованих користувачів
+                .anyRequest().permitAll() // Всі інші запити відкриті
+        ).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
+                .jwtAuthenticationConverter(jwtAuthenticationConverter()) // Використовуємо оновлений механізм
+        ));
+
+        return http.build();
+    }
+
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        return new JwtAuthenticationConverter();
+    }
+}

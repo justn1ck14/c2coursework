@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cs2_market
+    username: admin
+    password: secretpassword
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 10000
+      connection-timeout: 30000
+      validation-timeout: 5000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    format-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 20  # Пакетна обробка запитів
+        order_updates: true  # Оптимізація оновлень
+        order_inserts: true  # Оптимізація вставки
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/cs2-market
+      client:
+        registration:
+          keycloak:
+            client-id: cs2-app
+            client-secret: admin
+            authorization-grant-type: authorization_code
+            scope: openid,profile,email
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/cs2-market
