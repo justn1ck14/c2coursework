@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/cs2_market
@@ -19,22 +22,39 @@ spring:
     properties:
       hibernate:
         jdbc:
-          batch_size: 20  # Пакетна обробка запитів
-        order_updates: true  # Оптимізація оновлень
-        order_inserts: true  # Оптимізація вставки
+          batch_size: 20
+        order_updates: true
+        order_inserts: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/cs2-market
+          issuer-uri: http://localhost:8180/realms/cs2-market
       client:
         registration:
           keycloak:
-            client-id: cs2-app
-            client-secret: admin
+            client-id: springsecurity
+            client-secret: QtDRR8YGPQF53OKiBb2zGvmVAboR45hY
             authorization-grant-type: authorization_code
-            scope: openid,profile,email
+            scope: openid, profile, email
         provider:
           keycloak:
-            issuer-uri: http://localhost:8080/realms/cs2-market
+            issuer-uri: http://localhost:8180/realms/cs2-market
+
+  springdoc:
+   swagger-ui:
+     path: http://localhost:8080/swagger-ui.html
+   api-docs:
+     path: http://localhost:8080/v3/api-docs
+   oauth:
+     clientId: springsecurity
+     clientSecret: QtDRR8YGPQF53OKiBb2zGvmVAboR45hY
+     authorizationUrl: "http://localhost:8180/realms/cs2-market/protocol/openid-connect/auth"
+     tokenUrl: "http://localhost:8180/realms/cs2-market/protocol/openid-connect/token"
+     scopes: openid, profile, email
+
+logging:
+  level:
+    org.springframework.security: DEBUG
